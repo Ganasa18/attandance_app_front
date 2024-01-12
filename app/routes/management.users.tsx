@@ -3,11 +3,11 @@
 import { LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import PageLayout from "~/components/template/base/page_layout";
 import { requireAuthCookie } from "~/lib/auth";
-import DashboardPage from "../page/dashboard/dashboard";
+import DatabaseUsersPage from "~/page/database-user/database_user";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Dashboard Page" },
+    { title: "User Database Page" },
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
@@ -17,10 +17,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return userId;
 };
 
-export default function Index() {
+export default function ManagementUsers() {
   return (
     <PageLayout>
-      <DashboardPage />
+      <DatabaseUsersPage />
     </PageLayout>
   );
 }

@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
-import { LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import PageLayout from "~/components/template/base/page_layout";
 import { requireAuthCookie } from "~/lib/auth";
-import DashboardPage from "../page/dashboard/dashboard";
-
+import RoleMasterPage from "~/page/role-master/role_master";
 export const meta: MetaFunction = () => {
   return [
-    { title: "Dashboard Page" },
+    { title: "Role Page" },
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
@@ -17,10 +15,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return userId;
 };
 
-export default function Index() {
+export default function MasterRole() {
   return (
     <PageLayout>
-      <DashboardPage />
+      <RoleMasterPage />
     </PageLayout>
   );
 }

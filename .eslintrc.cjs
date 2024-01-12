@@ -54,8 +54,12 @@ module.exports = {
       settings: {
         "import/internal-regex": "^~/",
         "import/resolver": {
+          alias: {
+            map: [["~", "./app"]],
+            extensions: [".js", ".jsx", ".ts", ".tsx"],
+          },
           node: {
-            extensions: [".ts", ".tsx"],
+            extensions: [".js", ".jsx", ".ts", ".tsx"],
           },
           typescript: {
             alwaysTryTypes: true,
@@ -66,6 +70,8 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "plugin:import/recommended",
         "plugin:import/typescript",
+        "plugin:import/errors",
+        "plugin:import/warnings",
       ],
     },
 
