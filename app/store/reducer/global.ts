@@ -9,6 +9,7 @@ const initGlobal = {
   userLogin: {},
   activeNav: true,
   activeIndexNav: null,
+  token: "",
 };
 
 const globalReducer = (state: GlobalStateInterface, payload: any) => {
@@ -27,6 +28,11 @@ const globalReducer = (state: GlobalStateInterface, payload: any) => {
       return {
         ...state,
         activeIndexNav: payload.action,
+      };
+    case ActionTypes.SET_USER_TOKEN:
+      return {
+        ...state,
+        token: payload.action,
       };
     default:
       return state;

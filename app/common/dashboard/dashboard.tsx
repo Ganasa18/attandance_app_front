@@ -2,22 +2,16 @@
 /* eslint-disable import/no-unresolved */
 import { useSearchParams } from "@remix-run/react";
 import * as React from "react";
-import { toast } from "sonner";
 import MainTable from "~/components/template/table/main_table";
 import BreadCrumb from "~/components/ui/breadcrumb";
 import {
   BreadCrumbInterface,
   MainTableColumnInterface,
-} from "~/interface/component_interface";
-import {
-  ActionDashboardTypes,
   StateDashboard,
-} from "~/interface/dashboard_interface";
-import { cancelRequest } from "~/lib/axios_func";
+} from "~/interface";
 import { updateTableColumn } from "~/lib/table_formater";
-import { ServiceGetUserData } from "~/service/dashboard";
+import { DasboardActionGet } from "~/store/action/dashboard-action";
 import { ReducerDashboard } from "~/store/reducer/dashboard";
-
 import { useStore } from "~/store/use-store/use_store";
 
 const initState: StateDashboard = {
@@ -78,33 +72,11 @@ function DashboardPage() {
   };
 
   const getUserData = React.useCallback(async () => {
-    dispatch({ type: ActionDashboardTypes.SET_LOADING, loading: true });
-    const params = new URLSearchParams();
-    const res = await ServiceGetUserData(params, pageTable, rowPerPage);
-    if (res.status == 200) {
-      res.data.data;
-      dispatch({ type: ActionDashboardTypes.SET_DATA, data: res.data.data });
-      dispatch({
-        type: ActionDashboardTypes.SET_COUNT,
-        count: res.data.total,
-      });
-      params.set("page", `${pageTable}`);
-      params.set("per_page", `${rowPerPage}`);
-      setSearchParams(params);
-      setTimeout(() => {
-        dispatch({ type: ActionDashboardTypes.SET_LOADING, loading: false });
-      }, 800);
-    } else {
-      toast.error("SOMETHIN WENT WRONG");
-      dispatch({ type: ActionDashboardTypes.SET_LOADING, loading: false });
-    }
+    await DasboardActionGet(dispatch, pageTable, rowPerPage, setSearchParams);
   }, [pageTable, rowPerPage, setSearchParams]);
 
   React.useEffect(() => {
     getUserData();
-    return () => {
-      cancelRequest();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowPerPage, pageTable]);
 

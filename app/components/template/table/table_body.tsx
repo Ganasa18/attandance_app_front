@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
-import React, { useState } from "react";
+import * as React from "react";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Collapsible } from "~/components/ui/collapsible";
-
 import {
   Table,
   TableBody,
@@ -32,7 +31,7 @@ const TableBodyCustom = (props: any) => {
     collapsibleColumnValue,
   }: any = props;
 
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = React.useState<number | null>(null);
 
   const handleToggleOpen = (index: number | null) => {
     if (openIndex === index) {

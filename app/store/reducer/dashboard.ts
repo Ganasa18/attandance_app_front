@@ -1,32 +1,32 @@
 /* eslint-disable import/no-unresolved */
 import {
   ActionDashboard,
-  ActionDashboardTypes,
-  SetCountAction,
-  SetDataAction,
-  SetLoadingAction,
+  ActionTypes,
+  SetRoleCountAction,
+  SetRoleDataAction,
+  SetRoleLoadingAction,
   StateDashboard,
-} from "~/interface/dashboard_interface";
+} from "~/interface";
 
 export function ReducerDashboard(
   state: StateDashboard,
   action: ActionDashboard
 ): StateDashboard {
   switch (action.type) {
-    case ActionDashboardTypes.SET_LOADING:
+    case ActionTypes.SET_LOADING:
       return {
         ...state,
-        loading: (action as SetLoadingAction).loading,
+        loading: (action as SetRoleLoadingAction).loading,
       };
-    case ActionDashboardTypes.SET_COUNT:
+    case ActionTypes.SET_COUNT:
       return {
         ...state,
-        count: (action as SetCountAction).count,
+        count: (action as SetRoleCountAction).count,
       };
-    case ActionDashboardTypes.SET_DATA:
+    case ActionTypes.SET_DATA:
       return {
         ...state,
-        data: (action as SetDataAction).data,
+        data: (action as SetRoleDataAction).data,
       };
     default:
       return state;

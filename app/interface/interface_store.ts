@@ -5,25 +5,40 @@ export interface Action {
   payload?: any;
 }
 
+export type SetActionGlobal = ActionPayloadGlobal;
+
+export interface SetGlobalLoadingAction {
+  type: ActionTypes.SET_LOADING;
+  action: boolean;
+}
+
+export interface SetGlobalNavMenuAction {
+  type: ActionTypes.SET_NAV_MENU;
+  action: boolean;
+}
+
+export interface SetGlobalNavIndexAction {
+  type: ActionTypes.SET_NAV_INDEX;
+  action: number | null;
+}
+
+export interface SetGlobalUserTokenAction {
+  type: ActionTypes.SET_USER_TOKEN;
+  action: string;
+}
+
 export type ActionPayloadGlobal =
-  | {
-      type: ActionTypes.SET_LOADING;
-      action: boolean;
-    }
-  | {
-      type: ActionTypes.SET_NAV_MENU;
-      action: boolean;
-    }
-  | {
-      type: ActionTypes.SET_NAV_INDEX;
-      action: number | null;
-    };
+  | SetGlobalLoadingAction
+  | SetGlobalNavMenuAction
+  | SetGlobalNavIndexAction
+  | SetGlobalUserTokenAction;
 
 export interface GlobalStateInterface {
   isLoading: boolean;
   userLogin: object;
   activeNav: boolean;
   activeIndexNav: number | null;
+  token: string | null;
 }
 
 export interface TableStateInterface {
@@ -53,6 +68,9 @@ export enum ActionTypes {
   SET_SELECTED_ROW_TABLE = "SET_SELECTED_ROW_TABLE",
   SET_TABLE_ROW_PER_PAGE = "SET_TABLE_ROW_PER_PAGE",
   SET_TABLE_PAGE = "SET_TABLE_PAGE",
+  SET_COUNT = "SET_COUNT",
+  SET_DATA = "SET_DATA",
+  SET_USER_TOKEN = "SET_USER_TOKEN",
 }
 
 export enum TypeStoreStorage {

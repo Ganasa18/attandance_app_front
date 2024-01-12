@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
 import { useSearchParams } from "@remix-run/react";
-import { useEffect, useRef } from "react";
+import * as React from "react";
 import { Table, TableCaption } from "~/components/ui/table";
-import { MainTableProps } from "~/interface/component_interface";
-import { ActionPayloadTable, ActionTypes } from "~/interface/interface_store";
 import {
   actionCheckedAllTable,
   actionCheckedRowTable,
@@ -14,7 +12,7 @@ import TableBodyCustom from "./table_body";
 import TableFooterCustom from "./table_footer";
 import TableHeadCustom from "./table_header";
 import CustomTableTools from "./table_tools";
-
+import { ActionPayloadTable, ActionTypes, MainTableProps } from "~/interface";
 const MainTable = (props: MainTableProps) => {
   const {
     titleTable,
@@ -34,7 +32,7 @@ const MainTable = (props: MainTableProps) => {
     hasCreateButton,
     hasTableFooter = true,
   }: MainTableProps = props;
-  const hasEffectRun = useRef(false);
+  const hasEffectRun = React.useRef(false);
   const [state, dispatch] = useStore();
   const { selectedValue, rowPerPage, pageTable } = state.tableReducer;
   type Dispatch = (action: ActionPayloadTable) => void;
@@ -78,7 +76,7 @@ const MainTable = (props: MainTableProps) => {
     });
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!hasEffectRun.current) {
       if (searchParams.size > 0) {
         const pageParams = searchParams.get("page");

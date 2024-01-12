@@ -8,27 +8,31 @@ import BreadCrumb from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import ModalComp from "~/components/ui/custom-modal";
 import {
+  ActionTypes,
   BreadCrumbInterface,
   MainTableColumnInterface,
-} from "~/interface/component_interface";
-import {
   ResponseDataTable,
+  StateDatabaseUser,
   UserDatabaseResponseType,
-} from "~/interface/response_interface";
-import axiosFunc, { cancelRequest } from "~/lib/axios_func";
+} from "~/interface";
+import { cancelRequest } from "~/lib/axios_func";
+import { ServiceGetDatabaseUser } from "~/service/database-user";
+import { ReducerDatabaseUser } from "~/store/reducer/database-user";
 import { useStore } from "~/store/use-store/use_store";
 import { BodyModalUserCreate } from "./modal";
-import Cookies from "universal-cookie";
-const cookies = new Cookies();
+
+const initState: StateDatabaseUser = {
+  loading: true,
+  count: 20,
+  data: [],
+};
 
 const DatabaseUsersPage = () => {
-  const [dataUsers, setDataUsers] = React.useState<
-    UserDatabaseResponseType[] | []
-  >([]);
-  const [count, setCount] = React.useState<number | undefined>(0);
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [state] = useStore();
-  const { pageTable, rowPerPage } = state.tableReducer;
+  const [globalState] = useStore();
+  const [state, dispatch] = React.useReducer(ReducerDatabaseUser, initState);
+  const { loading, count, data } = state;
+  const { pageTable, rowPerPage } = globalState.tableReducer;
+  const { token } = globalState.globalReducer;
   const [openModalCreate, setOpenModalCreate] = React.useState<boolean>(false);
   const breadcrumb: BreadCrumbInterface[] = [
     {
@@ -91,32 +95,25 @@ const DatabaseUsersPage = () => {
 
   const getUsersData = React.useCallback(async () => {
     cancelRequest();
-    setLoading(true);
-
+    dispatch({ type: ActionTypes.SET_LOADING, loading: true });
     const params = new URLSearchParams();
-    const pageParams = params.get("page") || pageTable;
-    const perPageParams = params.get("per_page") || rowPerPage;
-
-    const url = `/api/v1/user?page=${pageParams}&limit=${perPageParams}`;
-    const response = await axiosFunc({
-      method: "get",
-      url: url,
-      headers: {
-        Authorization: cookies.get("token"),
-      },
-    });
-    const res: ResponseDataTable<UserDatabaseResponseType[]> = response?.data;
+    const res: ResponseDataTable<UserDatabaseResponseType[]> =
+      await ServiceGetDatabaseUser(params, pageTable, rowPerPage, token);
     if (res.code == 200) {
-      setDataUsers(res.listData || []);
-      setCount(res.pageInfo?.total);
+      dispatch({ type: ActionTypes.SET_DATA, data: res.listData! });
+      dispatch({
+        type: ActionTypes.SET_COUNT,
+        count: res.pageInfo!.total!,
+      });
       setTimeout(() => {
-        setLoading(false);
+        dispatch({ type: ActionTypes.SET_LOADING, loading: false });
       }, 800);
     } else {
       toast.error("SOMETHING WENT WRONG");
-      setLoading(false);
+      dispatch({ type: ActionTypes.SET_LOADING, loading: false });
     }
-  }, [pageTable, rowPerPage]);
+    // await DatabaseUserActionGet(dispatch, pageTable, rowPerPage);
+  }, [pageTable, rowPerPage, token]);
 
   React.useEffect(() => {
     getUsersData();
@@ -136,7 +133,7 @@ const DatabaseUsersPage = () => {
             {/* TABLE */}
             <MainTable
               titleTable="List Users Account"
-              data={dataUsers}
+              data={data}
               column={tableColumn}
               isClientPaginate={false}
               isLoading={loading}

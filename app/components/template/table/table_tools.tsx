@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
-import React, { useRef, useState } from "react";
+import * as React from "react";
 import { MainTableColumnInterface } from "~/interface/component_interface";
 import { BiHide, BiShow, BiCheckCircle } from "react-icons/bi/index.js";
 import { RxMixerHorizontal } from "react-icons/rx/index.js";
@@ -35,16 +35,16 @@ const CustomTableTools = ({
 }: CustomTableProps) => {
   const [state] = useStore();
   const { selectedValue } = state.tableReducer;
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = React.useState(false);
   const [temporaryOrder, setTemporaryOrder] =
-    useState<MainTableColumnInterface[]>(column);
-  const [openDialog, setOpenDialog] = useState(false);
-  const draggedIndex = useRef<number | null>(null);
-  const startY = useRef<number | null>(null);
-  const [dragItemIndex, setDragItemIndex] = useState<number | null>(null);
-  const [dragOverItemIndex, setDragOverItemIndex] = useState<number | null>(
-    null
-  );
+    React.useState<MainTableColumnInterface[]>(column);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const draggedIndex = React.useRef<number | null>(null);
+  const startY = React.useRef<number | null>(null);
+  const [dragItemIndex, setDragItemIndex] = React.useState<number | null>(null);
+  const [dragOverItemIndex, setDragOverItemIndex] = React.useState<
+    number | null
+  >(null);
 
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,

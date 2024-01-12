@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
 import { LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import DashboardPage from "~/common/dashboard/dashboard";
 import PageLayout from "~/components/template/base/page_layout";
 import { requireAuthCookie } from "~/lib/auth";
-import DashboardPage from "../page/dashboard/dashboard";
 
 export const meta: MetaFunction = () => {
   return [

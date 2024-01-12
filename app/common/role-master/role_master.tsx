@@ -2,24 +2,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable import/no-unresolved */
 import * as React from "react";
-("react");
-import { toast } from "sonner";
+import { HiOutlineDotsHorizontal } from "react-icons/hi/index.js";
 import MainTable from "~/components/template/table/main_table";
 import BreadCrumb from "~/components/ui/breadcrumb";
-import ModalComp from "~/components/ui/custom-modal";
-import { HiOutlineDotsHorizontal } from "react-icons/hi/index.js";
-import {
-  BreadCrumbInterface,
-  MainTableColumnInterface,
-} from "~/interface/component_interface";
-import {
-  ResponseDataTable,
-  RoleResponseType,
-} from "~/interface/response_interface";
-import axiosFunc, { cancelRequest } from "~/lib/axios_func";
-import { useStore } from "~/store/use-store/use_store";
-import { BodyModalRoleCreate } from "./modal";
 import { Button } from "~/components/ui/button";
+import ModalComp from "~/components/ui/custom-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,15 +15,31 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { cancelRequest } from "~/lib/axios_func";
 import { formatDateString } from "~/lib/table_formater";
+import { RoleMasterActionGet } from "~/store/action/role-master-action";
+import { ReducerRoleMaster } from "~/store/reducer/role-master";
+import { useStore } from "~/store/use-store/use_store";
+import { BodyModalRoleCreate } from "./modal";
+import {
+  BreadCrumbInterface,
+  MainTableColumnInterface,
+  RoleResponseType,
+  StateRoleMaster,
+} from "~/interface";
+
+const initState: StateRoleMaster = {
+  loading: true,
+  count: 20,
+  data: [],
+};
 
 const RoleMasterPage = () => {
-  const [dataRoles, setDataRoles] = React.useState<RoleResponseType[] | []>([]);
   const [dataRole, setDataRole] = React.useState<RoleResponseType>({});
-  const [count, setCount] = React.useState<number | undefined>(0);
-  const [state] = useStore();
-  const { pageTable, rowPerPage } = state.tableReducer;
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const [globalState] = useStore();
+  const { pageTable, rowPerPage } = globalState.tableReducer;
+  const [state, dispatch] = React.useReducer(ReducerRoleMaster, initState);
+  const { loading, count, data } = state;
   const [openModal, setOpenModal] = React.useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = React.useState<boolean>(false);
   const breadcrumb: BreadCrumbInterface[] = [
@@ -105,25 +108,6 @@ const RoleMasterPage = () => {
     },
   ];
 
-  // const collapsibleColumn: CollapseTableColumnInterface[] = [
-  //   {
-  //     label: "Head 1",
-  //     value: "head_one",
-  //   },
-  //   {
-  //     label: "Head 2",
-  //     value: "head_two",
-  //   },
-  //   {
-  //     label: "Head 3",
-  //     value: "head_three",
-  //   },
-  //   {
-  //     label: "Head 4",
-  //     value: "head_four",
-  //   },
-  // ];
-
   const handleEdit = (row: RoleResponseType) => {
     console.log(row, "ROW VALUE");
     setDataRole(row);
@@ -132,23 +116,7 @@ const RoleMasterPage = () => {
 
   const getRoleData = React.useCallback(async () => {
     cancelRequest();
-    setLoading(true);
-    const url = `/api/v1/role?page=${pageTable}&limit=${rowPerPage}`;
-    const response = await axiosFunc({
-      method: "get",
-      url: url,
-    });
-    const res: ResponseDataTable<RoleResponseType[]> = response?.data;
-    if (res.code == 200) {
-      setDataRoles(res.listData || []);
-      setCount(res.pageInfo?.total);
-      setTimeout(() => {
-        setLoading(false);
-      }, 800);
-    } else {
-      toast.error("SOMETHING WENT WRONG");
-      setLoading(false);
-    }
+    await RoleMasterActionGet(dispatch, pageTable, rowPerPage);
   }, [pageTable, rowPerPage]);
 
   React.useEffect(() => {
@@ -169,7 +137,7 @@ const RoleMasterPage = () => {
             {/* TABLE */}
             <MainTable
               titleTable="Master Table List"
-              data={dataRoles}
+              data={data}
               column={tableColumn}
               isLoading={loading}
               count={count}

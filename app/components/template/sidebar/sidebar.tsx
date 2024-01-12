@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
-import React from "react";
+import * as React from "react";
 import { GiHamburgerMenu } from "react-icons/gi/index.js";
-import { ActionPayloadGlobal, ActionTypes } from "~/interface/interface_store";
+import { ActionPayloadGlobal, ActionTypes } from "~/interface";
 import { useStore } from "~/store/use-store/use_store";
 
 const MainSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {

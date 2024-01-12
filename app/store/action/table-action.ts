@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
-import { ActionPayloadTable, ActionTypes } from "~/interface/interface_store";
+import { ActionPayloadTable, ActionTypes } from "~/interface";
 
 type Dispatch = (action: ActionPayloadTable) => void;
 

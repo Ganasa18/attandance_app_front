@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import MenuMasterPage from "~/common/menu-master/menu_master";
 import PageLayout from "~/components/template/base/page_layout";
 import { requireAuthCookie } from "~/lib/auth";
-import MenuMasterPage from "~/page/menu-master/menu_master";
 export const meta: MetaFunction = () => {
   return [
     { title: "Menu Page" },
