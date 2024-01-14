@@ -71,7 +71,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookieHeader = request.headers.get("Cookie");
   const userId = await sessionStorage("token").parse(cookieHeader);
   if (userId) {
-    throw redirect("/");
+    throw redirect("/home");
   }
   return userId;
 };

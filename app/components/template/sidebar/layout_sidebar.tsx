@@ -17,7 +17,7 @@ const dummyMenu: MenuItem[] = [
     id: 1,
     menu_name: "dashboard",
     title_menu: "Dashboard",
-    path: "/",
+    path: "/home",
     is_submenu: false,
     parent_name: "",
   },

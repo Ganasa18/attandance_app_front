@@ -1,21 +1,22 @@
 /* eslint-disable import/no-unresolved */
 import { toast } from "sonner";
-import { ActionTypes, SetActionRoleMaster } from "~/interface";
 import {
+  ActionTypes,
+  MenuResponseType,
   ResponseDataTable,
-  RoleResponseType,
-} from "~/interface/response_interface";
+  SetActionMenuMaster,
+} from "~/interface";
+import { ServiceGetAllMenu } from "~/service/menu-master";
 
-import { ServiceGetAllRole } from "~/service/role-master";
-
-export const RoleMasterActionGet = async (
-  dispatch: React.Dispatch<SetActionRoleMaster>,
+export const MenuMasterActionGet = async (
+  dispatch: React.Dispatch<SetActionMenuMaster>,
   pageTable: number,
   rowPerPage: number,
   token: string
 ) => {
   dispatch({ type: ActionTypes.SET_LOADING, loading: true });
-  const res: ResponseDataTable<RoleResponseType[]> = await ServiceGetAllRole(
+
+  const res: ResponseDataTable<MenuResponseType[]> = await ServiceGetAllMenu(
     pageTable,
     rowPerPage,
     token
@@ -26,7 +27,6 @@ export const RoleMasterActionGet = async (
       type: ActionTypes.SET_COUNT,
       count: res.pageInfo!.total!,
     });
-
     setTimeout(() => {
       dispatch({ type: ActionTypes.SET_LOADING, loading: false });
     }, 800);

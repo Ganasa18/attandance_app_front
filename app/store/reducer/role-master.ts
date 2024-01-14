@@ -2,10 +2,10 @@
 import {
   SetActionRoleMaster,
   ActionTypes,
-  SetDasboardCountAction,
-  SetDasboardLoadingAction,
-  SetDashboardDataAction,
   StateRoleMaster,
+  SetRoleLoadingAction,
+  SetRoleCountAction,
+  SetRoleDataAction,
 } from "~/interface";
 
 export function ReducerRoleMaster(
@@ -16,17 +16,17 @@ export function ReducerRoleMaster(
     case ActionTypes.SET_LOADING:
       return {
         ...state,
-        loading: (action as SetDasboardLoadingAction).loading,
+        loading: (action as SetRoleLoadingAction).loading,
       };
     case ActionTypes.SET_COUNT:
       return {
         ...state,
-        count: (action as SetDasboardCountAction).count,
+        count: (action as SetRoleCountAction).count,
       };
     case ActionTypes.SET_DATA:
       return {
         ...state,
-        data: (action as SetDashboardDataAction).data,
+        data: (action as SetRoleDataAction).data,
       };
     default:
       return state;

@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable import/no-unresolved */
 import * as React from "react";
-import { HiOutlineDotsHorizontal } from "react-icons/hi/index.js";
-import MainTable from "~/components/template/table/main_table";
-import BreadCrumb from "~/components/ui/breadcrumb";
-import { Button } from "~/components/ui/button";
-import ModalComp from "~/components/ui/custom-modal";
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import {
+  BreadCrumbInterface,
+  MainTableColumnInterface,
+  RoleResponseType,
+  StateRoleMaster,
+} from "~/interface";
+import { requireAuthCookie } from "~/lib/auth";
+import { useStore } from "~/store/use-store/use_store";
+import { ReducerRoleMaster } from "~/store/reducer/role-master";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,28 +19,40 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { cancelRequest } from "~/lib/axios_func";
+import { Button } from "~/components/ui/button";
+import { HiOutlineDotsHorizontal } from "react-icons/hi/index.js";
 import { formatDateString } from "~/lib/table_formater";
+import { cancelRequest } from "~/lib/axios_func";
 import { RoleMasterActionGet } from "~/store/action/role-master-action";
-import { ReducerRoleMaster } from "~/store/reducer/role-master";
-import { useStore } from "~/store/use-store/use_store";
+import PageLayout from "~/components/template/base/page_layout";
+import BreadCrumb from "~/components/ui/breadcrumb";
+import MainTable from "~/components/template/table/main_table";
+import ModalComp from "~/components/ui/custom-modal";
 import { BodyModalRoleCreate } from "./modal";
-import {
-  BreadCrumbInterface,
-  MainTableColumnInterface,
-  RoleResponseType,
-  StateRoleMaster,
-} from "~/interface";
+import { useLoaderData } from "@remix-run/react";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Role Page" },
+    { name: "description", content: "Welcome to Remix!" },
+  ];
+};
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const userId:string = await requireAuthCookie(request);
+  return userId;
+};
 
 const initState: StateRoleMaster = {
   loading: true,
-  count: 20,
+  count: 0,
   data: [],
 };
 
-const RoleMasterPage = () => {
-  const [dataRole, setDataRole] = React.useState<RoleResponseType>({});
+export default function MasterRole() {
+  const userId = useLoaderData<typeof loader>();
   const [globalState] = useStore();
+  const [dataRole, setDataRole] = React.useState<RoleResponseType>({});
   const { pageTable, rowPerPage } = globalState.tableReducer;
   const [state, dispatch] = React.useReducer(ReducerRoleMaster, initState);
   const { loading, count, data } = state;
@@ -116,19 +132,17 @@ const RoleMasterPage = () => {
 
   const getRoleData = React.useCallback(async () => {
     cancelRequest();
-    await RoleMasterActionGet(dispatch, pageTable, rowPerPage);
-  }, [pageTable, rowPerPage]);
+    await RoleMasterActionGet(dispatch, pageTable, rowPerPage, userId);
+  }, [pageTable, rowPerPage, userId]);
 
   React.useEffect(() => {
     getRoleData();
-    return () => {
-      cancelRequest();
-    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageTable, rowPerPage]);
 
   return (
-    <>
+    <PageLayout>
       <div className="w-full">
         <div className="overflow-x-auto">
           <div className="sm:px-6 w-full ">
@@ -170,8 +184,6 @@ const RoleMasterPage = () => {
         modalOpen={openModalEdit}
         onClose={() => setOpenModalEdit(!openModalEdit)}
       />
-    </>
+    </PageLayout>
   );
-};
-
-export default RoleMasterPage;
+}

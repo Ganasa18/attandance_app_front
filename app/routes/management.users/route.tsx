@@ -1,38 +1,51 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable import/no-unresolved */
+import { LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { toast } from "sonner";
+import PageLayout from "~/components/template/base/page_layout";
 import MainTable from "~/components/template/table/main_table";
 import BreadCrumb from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import ModalComp from "~/components/ui/custom-modal";
+
 import {
-  ActionTypes,
   BreadCrumbInterface,
   MainTableColumnInterface,
-  ResponseDataTable,
   StateDatabaseUser,
   UserDatabaseResponseType,
 } from "~/interface";
-import { cancelRequest } from "~/lib/axios_func";
-import { ServiceGetDatabaseUser } from "~/service/database-user";
+import { requireAuthCookie } from "~/lib/auth";
+
+import { DatabaseUserActionGet } from "~/store/action/database-user-action";
 import { ReducerDatabaseUser } from "~/store/reducer/database-user";
 import { useStore } from "~/store/use-store/use_store";
 import { BodyModalUserCreate } from "./modal";
 
+export const meta: MetaFunction = () => {
+  return [
+    { title: "User Database Page" },
+    { name: "description", content: "Welcome to Remix!" },
+  ];
+};
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const userId: string = await requireAuthCookie(request);
+  return userId;
+};
+
 const initState: StateDatabaseUser = {
   loading: true,
-  count: 20,
+  count: 0,
   data: [],
 };
 
-const DatabaseUsersPage = () => {
+export default function ManagementUsers() {
+  const userId = useLoaderData<typeof loader>();
   const [globalState] = useStore();
   const [state, dispatch] = React.useReducer(ReducerDatabaseUser, initState);
   const { loading, count, data } = state;
   const { pageTable, rowPerPage } = globalState.tableReducer;
-  const { token } = globalState.globalReducer;
   const [openModalCreate, setOpenModalCreate] = React.useState<boolean>(false);
   const breadcrumb: BreadCrumbInterface[] = [
     {
@@ -94,37 +107,17 @@ const DatabaseUsersPage = () => {
   ];
 
   const getUsersData = React.useCallback(async () => {
-    cancelRequest();
-    dispatch({ type: ActionTypes.SET_LOADING, loading: true });
-    const params = new URLSearchParams();
-    const res: ResponseDataTable<UserDatabaseResponseType[]> =
-      await ServiceGetDatabaseUser(params, pageTable, rowPerPage, token);
-    if (res.code == 200) {
-      dispatch({ type: ActionTypes.SET_DATA, data: res.listData! });
-      dispatch({
-        type: ActionTypes.SET_COUNT,
-        count: res.pageInfo!.total!,
-      });
-      setTimeout(() => {
-        dispatch({ type: ActionTypes.SET_LOADING, loading: false });
-      }, 800);
-    } else {
-      toast.error("SOMETHING WENT WRONG");
-      dispatch({ type: ActionTypes.SET_LOADING, loading: false });
-    }
-    // await DatabaseUserActionGet(dispatch, pageTable, rowPerPage);
-  }, [pageTable, rowPerPage, token]);
+    await DatabaseUserActionGet(dispatch, pageTable, rowPerPage, userId);
+  }, [pageTable, rowPerPage, userId]);
 
   React.useEffect(() => {
     getUsersData();
-    return () => {
-      cancelRequest();
-    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageTable, rowPerPage]);
 
   return (
-    <>
+    <PageLayout>
       <div className="w-full">
         <div className="overflow-x-auto">
           <div className="sm:px-6 w-full">
@@ -155,8 +148,6 @@ const DatabaseUsersPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </PageLayout>
   );
-};
-
-export default DatabaseUsersPage;
+}

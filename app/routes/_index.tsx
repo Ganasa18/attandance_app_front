@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
-import { LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
-import DashboardPage from "~/common/dashboard/dashboard";
+import {
+  LoaderFunctionArgs,
+  redirect,
+  type MetaFunction,
+} from "@remix-run/node";
 import PageLayout from "~/components/template/base/page_layout";
 import { requireAuthCookie } from "~/lib/auth";
 
@@ -14,13 +17,16 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireAuthCookie(request);
+  if (userId) {
+    throw redirect("/home");
+  }
   return userId;
 };
 
 export default function Index() {
   return (
     <PageLayout>
-      <DashboardPage />
+      <div>Index Route</div>
     </PageLayout>
   );
 }

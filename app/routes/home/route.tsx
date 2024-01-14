@@ -1,18 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
-import { useSearchParams } from "@remix-run/react";
 import * as React from "react";
-import MainTable from "~/components/template/table/main_table";
-import BreadCrumb from "~/components/ui/breadcrumb";
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { useSearchParams } from "@remix-run/react";
 import {
   BreadCrumbInterface,
   MainTableColumnInterface,
   StateDashboard,
 } from "~/interface";
-import { updateTableColumn } from "~/lib/table_formater";
-import { DasboardActionGet } from "~/store/action/dashboard-action";
+import { requireAuthCookie } from "~/lib/auth";
 import { ReducerDashboard } from "~/store/reducer/dashboard";
 import { useStore } from "~/store/use-store/use_store";
+import { updateTableColumn } from "~/lib/table_formater";
+import { DasboardActionGet } from "~/store/action/dashboard-action";
+import PageLayout from "~/components/template/base/page_layout";
+import BreadCrumb from "~/components/ui/breadcrumb";
+import MainTable from "~/components/template/table/main_table";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Dashboard Page" },
+    { name: "description", content: "Welcome to Remix!" },
+  ];
+};
 
 const initState: StateDashboard = {
   loading: true,
@@ -20,7 +30,12 @@ const initState: StateDashboard = {
   data: [],
 };
 
-function DashboardPage() {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const userId = await requireAuthCookie(request);
+  return userId;
+};
+
+export default function HomePage() {
   const [, setSearchParams] = useSearchParams();
   const breadcrumb: BreadCrumbInterface[] = [];
   const [globalState] = useStore();
@@ -81,27 +96,27 @@ function DashboardPage() {
   }, [rowPerPage, pageTable]);
 
   return (
-    <div className="w-full">
-      <div className="overflow-x-auto">
-        <div className="sm:px-6 w-full">
-          {/* BREAD CRUMB */}
-          <BreadCrumb navigation={breadcrumb} />
-          {/* TABLE */}
-          <MainTable
-            titleTable="Table Title"
-            data={data}
-            column={tableColumn}
-            setTableColumn={setTableColumn}
-            isLoading={loading}
-            count={count}
-            isClientPaginate={false}
-            hasCheckbox
-            hasShowColumn
-          />
+    <PageLayout>
+      <div className="w-full">
+        <div className="overflow-x-auto">
+          <div className="sm:px-6 w-full">
+            {/* BREAD CRUMB */}
+            <BreadCrumb navigation={breadcrumb} />
+            {/* TABLE */}
+            <MainTable
+              titleTable="Table Title"
+              data={data}
+              column={tableColumn}
+              setTableColumn={setTableColumn}
+              isLoading={loading}
+              count={count}
+              isClientPaginate={false}
+              hasCheckbox
+              hasShowColumn
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
-
-export default DashboardPage;

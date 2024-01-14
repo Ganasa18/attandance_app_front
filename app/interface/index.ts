@@ -6,3 +6,4 @@ export * from "./menu_interface";
 export * from "./response_interface";
 export * from "./role_master_interface";
 export * from "./database_user_interface";
+export * from "./menu_master_interface";
