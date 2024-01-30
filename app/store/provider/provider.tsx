@@ -1,22 +1,21 @@
-import { useReducer, type FC, type ReactNode, useMemo } from "react";
-import Context from "../context/context";
-import combineReducers, { InitState } from "..";
-import { globalReducer, tableReducer } from "../reducer";
+// import { useMemo, useReducer, type FC, type ReactNode } from "react";
+// import combineReducers, { InitState, RootReducer } from "..";
+// import Context from "../context/context";
+// import { tableReducer } from "../reducer";
 
-interface ProvidersProps {
-  children: ReactNode;
-}
+// interface ProvidersProps {
+//   children: ReactNode;
+// }
 
-const rootReducer = combineReducers({
-  globalReducer,
-  tableReducer,
-});
+// const rootReducer: RootReducer = {
+//   tableReducer: tableReducer,
+// };
 
-const Providers: FC<ProvidersProps> = ({ children }) => {
-  const [state, dispatch] = useReducer(rootReducer, InitState);
-  const store = useMemo(() => [state, dispatch], [state]);
+// const Providers: FC<ProvidersProps> = ({ children }) => {
+//   const [state, dispatch] = useReducer(combineReducers(rootReducer), InitState);
+//   const store = useMemo(() => [state, dispatch], [state]);
 
-  return <Context.Provider value={store}>{children}</Context.Provider>;
-};
+//   return <Context.Provider value={store}>{children}</Context.Provider>;
+// };
 
-export default Providers;
+// export default Providers;

@@ -1,43 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  ActionTypes,
-  GlobalStateInterface,
-} from "../../interface/interface_store";
+import { StateCreator } from "zustand";
+import { GlobalInitInterface, GlobalSliceInterface } from "../../interface/";
 
-const initGlobal = {
-  isLoading: true,
-  userLogin: {},
-  activeNav: true,
-  activeIndexNav: null,
-  token: "",
-};
+const INIT_STATE_GLOBAL: Pick<GlobalInitInterface, keyof GlobalInitInterface> =
+  {
+    loading: true,
+    activeNav: true,
+    activeIndexNav: 0,
+    token: "",
+  };
 
-const globalReducer = (state: GlobalStateInterface, payload: any) => {
-  switch (payload.type) {
-    case ActionTypes.SET_LOADING:
-      return {
-        ...state,
-        isLoading: payload.action,
-      };
-    case ActionTypes.SET_NAV_MENU:
-      return {
-        ...state,
-        activeNav: payload.action,
-      };
-    case ActionTypes.SET_NAV_INDEX:
-      return {
-        ...state,
-        activeIndexNav: payload.action,
-      };
-    case ActionTypes.SET_USER_TOKEN:
-      return {
-        ...state,
-        token: payload.action,
-      };
-    default:
-      return state;
-  }
-};
+const createGlobalSlice: StateCreator<
+  GlobalSliceInterface,
+  [],
+  [],
+  GlobalSliceInterface
+> = (set) => ({
+  ...INIT_STATE_GLOBAL,
+  setLoading: () => set((state) => ({ loading: !state.loading })),
+  setActiveNav: () => set((state) => ({ activeNav: !state.activeNav })),
+  setActiveIndexNav: (activeIndexNav) => {
+    return set({ activeIndexNav: activeIndexNav });
+  },
+  setTokenUser: (token: string) => set({ token: token }),
+});
 
-export default globalReducer;
-export { initGlobal };
+export { createGlobalSlice };

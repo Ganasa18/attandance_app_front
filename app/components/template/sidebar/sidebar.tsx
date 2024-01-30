@@ -1,21 +1,10 @@
 /* eslint-disable import/no-unresolved */
 import * as React from "react";
 import { GiHamburgerMenu } from "react-icons/gi/index.js";
-import { ActionPayloadGlobal, ActionTypes } from "~/interface";
-import { useStore } from "~/store/use-store/use_store";
+import { useCombinedStore } from "~/store/use-store/combine-store";
 
 const MainSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useStore();
-  const { activeNav } = state.globalReducer;
-  type Dispatch = (action: ActionPayloadGlobal) => void;
-  const typeDispatch: Dispatch = dispatch;
-
-  const handleActiveNav = () => {
-    typeDispatch({
-      type: ActionTypes.SET_NAV_MENU,
-      action: !activeNav,
-    });
-  };
+  const { activeNav, setActiveNav } = useCombinedStore();
 
   return (
     <aside
@@ -37,7 +26,7 @@ const MainSidebar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </svg>
           M Attandance Dashboard
           <button
-            onClick={() => handleActiveNav()}
+            onClick={setActiveNav}
             className={`${
               !activeNav ? "hidden" : ""
             } px-2 py-2 rounded-lg bg-gray-50 hover:bg-gray-100`}>

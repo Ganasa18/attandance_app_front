@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
 import * as React from "react";
-import { MainTableColumnInterface } from "~/interface/component_interface";
-import { BiHide, BiShow, BiCheckCircle } from "react-icons/bi/index.js";
+import { BiCheckCircle, BiHide, BiShow } from "react-icons/bi/index.js";
+import { IoAdd, IoReorderThreeOutline } from "react-icons/io5/index.js";
 import { RxMixerHorizontal } from "react-icons/rx/index.js";
-import { IoReorderThreeOutline, IoAdd } from "react-icons/io5/index.js";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -15,8 +14,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { useStore } from "~/store/use-store/use_store";
 import { Label } from "~/components/ui/label";
+import { MainTableColumnInterface } from "~/interface/component_interface";
+import { useCombinedStore } from "~/store/use-store/combine-store";
 
 type CustomTableProps = {
   column: MainTableColumnInterface[];
@@ -33,8 +33,7 @@ const CustomTableTools = ({
   hasShowColumn,
   hasCreateButton,
 }: CustomTableProps) => {
-  const [state] = useStore();
-  const { selectedValue } = state.tableReducer;
+  const { selectedValue } = useCombinedStore();
   const [isDragging, setIsDragging] = React.useState(false);
   const [temporaryOrder, setTemporaryOrder] =
     React.useState<MainTableColumnInterface[]>(column);

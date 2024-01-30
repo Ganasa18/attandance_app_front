@@ -15,11 +15,9 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { TableCell, TableFooter, TableRow } from "~/components/ui/table";
-import { useStore } from "~/store/use-store/use_store";
+import { useCombinedStore } from "~/store/use-store/combine-store";
 const TableFooterCustom = (props: any) => {
-  const [state] = useStore();
-
-  const { selectedValue, rowPerPage, pageTable } = state.tableReducer;
+  const { selectedValue, rowPerPage, pageTable } = useCombinedStore();
   const {
     headers,
     rowsPerPageOptions,

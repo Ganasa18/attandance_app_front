@@ -79,6 +79,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function Login() {
   const formData = useActionData<typeof action>();
   const navigation = useNavigation();
+
   return (
     <div className="min-h-screen">
       <div className="container h-screen relative flex-col items-center justify-center grid sm:grid lg:max-w-none lg:grid-cols-2 lg:px-0">

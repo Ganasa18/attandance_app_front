@@ -2,29 +2,29 @@
 export interface Action {
   type: ActionTypes;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload?: any;
+  action?: any;
 }
 
-export type SetActionGlobal = ActionPayloadGlobal;
+// export type SetActionGlobal = ActionPayloadGlobal;
 
 export interface SetGlobalLoadingAction {
   type: ActionTypes.SET_LOADING;
-  action: boolean;
+  isLoading: boolean;
 }
 
 export interface SetGlobalNavMenuAction {
   type: ActionTypes.SET_NAV_MENU;
-  action: boolean;
+  activeNav: boolean;
 }
 
 export interface SetGlobalNavIndexAction {
   type: ActionTypes.SET_NAV_INDEX;
-  action: number | null;
+  activeIndexNav: number;
 }
 
 export interface SetGlobalUserTokenAction {
   type: ActionTypes.SET_USER_TOKEN;
-  action: string;
+  token: string;
 }
 
 export type ActionPayloadGlobal =
@@ -37,8 +37,8 @@ export interface GlobalStateInterface {
   isLoading: boolean;
   userLogin: object;
   activeNav: boolean;
-  activeIndexNav: number | null;
-  token: string | null;
+  activeIndexNav: number;
+  token: string;
 }
 
 export interface TableStateInterface {
@@ -47,19 +47,25 @@ export interface TableStateInterface {
   pageTable: number;
 }
 
+export interface SetTableSelectedRowAction {
+  type: ActionTypes.SET_SELECTED_ROW_TABLE;
+  selectedValue: any[];
+}
+
+export interface SetTableRowPageAction {
+  type: ActionTypes.SET_TABLE_ROW_PER_PAGE;
+  rowPerPage: number;
+}
+
+export interface SetTablePageAction {
+  type: ActionTypes.SET_TABLE_PAGE;
+  pageTable: number;
+}
+
 export type ActionPayloadTable =
-  | {
-      type: ActionTypes.SET_SELECTED_ROW_TABLE;
-      action: any[];
-    }
-  | {
-      type: ActionTypes.SET_TABLE_ROW_PER_PAGE;
-      action: number;
-    }
-  | {
-      type: ActionTypes.SET_TABLE_PAGE;
-      action: number;
-    };
+  | SetTableSelectedRowAction
+  | SetTableRowPageAction
+  | SetTablePageAction;
 
 export enum ActionTypes {
   SET_LOADING = "SET_LOADING",
@@ -76,4 +82,30 @@ export enum ActionTypes {
 export enum TypeStoreStorage {
   LOCAL_USER_MENU = "LOCAL_USER_MENU",
   USER_TOKEN = "USER_TOKEN",
+}
+
+export interface GlobalInitInterface {
+  loading: boolean;
+  activeNav: boolean;
+  activeIndexNav: number;
+  token: string;
+}
+
+export interface GlobalSliceInterface extends GlobalInitInterface {
+  setLoading: () => void;
+  setActiveNav: () => void;
+  setActiveIndexNav: (index: number) => void;
+  setTokenUser: (token: string) => void;
+}
+
+export interface TableInitInterface {
+  selectedValue: any[];
+  rowPerPage: number;
+  pageTable: number;
+}
+
+export interface TableSliceInterface extends TableInitInterface {
+  setSelectedValue: (selectedValue: any[]) => void;
+  setRowPerPage: (rowPerPage: number) => void;
+  setPageTable: (pageTable: number) => void;
 }

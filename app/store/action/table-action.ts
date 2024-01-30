@@ -1,31 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-unresolved */
-import { ActionPayloadTable, ActionTypes } from "~/interface";
+import { useCombinedStore } from "../use-store/combine-store";
 
-type Dispatch = (action: ActionPayloadTable) => void;
-
-const actionCheckedAllTable = async (
-  dispatch: Dispatch,
-  event: any,
-  data: any
-) => {
-  const typeDispatch: Dispatch = dispatch;
+const actionCheckedAllTable = async (event: any, data: any) => {
   if (event) {
-    typeDispatch({
-      type: ActionTypes.SET_SELECTED_ROW_TABLE,
-      action: data.slice(),
-    });
+    useCombinedStore.getState().setSelectedValue(data.slice());
   } else {
-    typeDispatch({ type: ActionTypes.SET_SELECTED_ROW_TABLE, action: [] });
+    useCombinedStore.getState().setSelectedValue([]);
   }
 };
 
-const actionCheckedRowTable = async (
-  dispatch: Dispatch,
-  row: any,
-  selectedRows: any
-) => {
-  const typeDispatch: Dispatch = dispatch;
+const actionCheckedRowTable = async (row: any, selectedRows: any) => {
   const selectedIndexRow = selectedRows.indexOf(row);
   let newSelected = [];
   if (selectedIndexRow === -1) {
@@ -35,11 +20,7 @@ const actionCheckedRowTable = async (
       (selectedRow: any) => selectedRow !== row
     );
   }
-
-  typeDispatch({
-    type: ActionTypes.SET_SELECTED_ROW_TABLE,
-    action: newSelected,
-  });
+  useCombinedStore.getState().setSelectedValue(newSelected);
 };
 
 export { actionCheckedAllTable, actionCheckedRowTable };

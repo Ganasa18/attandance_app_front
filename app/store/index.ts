@@ -1,27 +1,33 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Action } from "../interface/interface_store";
-import { initGlobal, initTable } from "./reducer";
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// import { Action } from "../interface/interface_store";
+// import { initGlobal, initTable } from "./reducer";
 
-const combineReducers =
-  (slices: { [key: string]: (state: any, action: Action) => any }) =>
-  (state: { [key: string]: any }, action: Action) =>
-    Object.keys(slices).reduce(
-      (acc, prop) => ({
-        ...acc,
-        [prop]: slices[prop](acc[prop], action),
-      }),
-      state
-    );
+// export interface RootReducer {
+//   [key: string]: (state: any, action: any) => any;
+// }
 
-const InitState = {
-  globalReducer: initGlobal,
-  tableReducer: initTable,
-};
+// function combineReducers(reducers: RootReducer) {
+//   return (state: any, action: any) => {
+//     let nextState = state;
+//     Object.keys(reducers).forEach((key) => {
+//       nextState = {
+//         ...nextState,
+//         [key]: reducers[key](nextState[key], action),
+//       };
+//     });
+//     return nextState;
+//   };
+// }
 
-function reduceReducers(...reducers: ((state: any, action: Action) => any)[]) {
-  return (state: any, action: Action) =>
-    reducers.reduce((acc, nextReducer) => nextReducer(acc, action), state);
-}
+// const InitState = {
+//   globalReducer: initGlobal,
+//   tableReducer: initTable,
+// };
 
-export default combineReducers;
-export { InitState, reduceReducers };
+// function reduceReducers(...reducers: ((state: any, action: any) => any)[]) {
+//   return (state: any, action: Action) =>
+//     reducers.reduce((acc, nextReducer) => nextReducer(acc, action), state);
+// }
+
+// export default combineReducers;
+// export { InitState, reduceReducers };

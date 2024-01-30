@@ -11,14 +11,12 @@ import { ServiceGetAllRole } from "~/service/role-master";
 export const RoleMasterActionGet = async (
   dispatch: React.Dispatch<SetActionRoleMaster>,
   pageTable: number,
-  rowPerPage: number,
-  token: string
+  rowPerPage: number
 ) => {
   dispatch({ type: ActionTypes.SET_LOADING, loading: true });
   const res: ResponseDataTable<RoleResponseType[]> = await ServiceGetAllRole(
     pageTable,
-    rowPerPage,
-    token
+    rowPerPage
   );
   if (res.code == 200) {
     dispatch({ type: ActionTypes.SET_DATA, data: res.listData! });

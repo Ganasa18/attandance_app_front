@@ -1,4 +1,3 @@
-import tableReducer, { initTable } from "./table";
-import globalReducer, { initGlobal } from "./global";
+// import tableReducer, { initTable } from "./table";
 
-export { tableReducer, initTable, globalReducer, initGlobal };
+// export { initTable, tableReducer };

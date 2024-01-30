@@ -11,15 +11,13 @@ import { ServiceGetAllMenu } from "~/service/menu-master";
 export const MenuMasterActionGet = async (
   dispatch: React.Dispatch<SetActionMenuMaster>,
   pageTable: number,
-  rowPerPage: number,
-  token: string
+  rowPerPage: number
 ) => {
   dispatch({ type: ActionTypes.SET_LOADING, loading: true });
 
   const res: ResponseDataTable<MenuResponseType[]> = await ServiceGetAllMenu(
     pageTable,
-    rowPerPage,
-    token
+    rowPerPage
   );
   if (res.code == 200) {
     dispatch({ type: ActionTypes.SET_DATA, data: res.listData! });

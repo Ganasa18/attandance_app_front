@@ -1,28 +1,17 @@
 /* eslint-disable import/no-unresolved */
-import Paragraph from "~/components/ui/paragraph";
 import { GiHamburgerMenu } from "react-icons/gi/index.js";
-import { ActionPayloadGlobal, ActionTypes } from "~/interface/interface_store";
-import { useStore } from "~/store/use-store/use_store";
+import Paragraph from "~/components/ui/paragraph";
+import { useCombinedStore } from "~/store/use-store/combine-store";
 
 const LayoutTopbar = () => {
-  const [state, dispatch] = useStore();
-  const { activeNav } = state.globalReducer;
-  type Dispatch = (action: ActionPayloadGlobal) => void;
-  const typeDispatch: Dispatch = dispatch;
-
-  const handleActiveNav = () => {
-    typeDispatch({
-      type: ActionTypes.SET_NAV_MENU,
-      action: !activeNav,
-    });
-  };
+  const { activeNav, setActiveNav } = useCombinedStore();
 
   return (
     <div>
       <div className="w-full bg-slate-900 h-16 flex justify-between items-center px-8 text-white">
         <div className="flex space-x-2">
           <button
-            onClick={() => handleActiveNav()}
+            onClick={setActiveNav}
             className={`${
               activeNav ? "hidden" : ""
             } px-2 py-2 hover:bg-slate-800`}>

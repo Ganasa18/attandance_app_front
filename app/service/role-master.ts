@@ -7,16 +7,12 @@ import axiosFunc from "~/lib/axios_func";
 
 export const ServiceGetAllRole = async (
   pageTable: number,
-  rowPerPage: number,
-  token: string
+  rowPerPage: number
 ) => {
   const url = `/api/v1/role?page=${pageTable}&limit=${rowPerPage}`;
   const response = await axiosFunc({
     method: "get",
     url: url,
-    headers: {
-      Authorization: token,
-    },
   });
   const res: ResponseDataTable<RoleResponseType[]> = response?.data;
   return res;

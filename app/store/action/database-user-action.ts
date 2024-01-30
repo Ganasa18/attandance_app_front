@@ -11,13 +11,12 @@ import { ServiceGetDatabaseUser } from "~/service/database-user";
 export const DatabaseUserActionGet = async (
   dispatch: React.Dispatch<SetActionDatabaseUser>,
   pageTable: number,
-  rowPerPage: number,
-  token: string
+  rowPerPage: number
 ) => {
   dispatch({ type: ActionTypes.SET_LOADING, loading: true });
   const params = new URLSearchParams();
   const res: ResponseDataTable<UserDatabaseResponseType[]> =
-    await ServiceGetDatabaseUser(params, pageTable, rowPerPage, token);
+    await ServiceGetDatabaseUser(params, pageTable, rowPerPage);
   if (res.code == 200) {
     dispatch({ type: ActionTypes.SET_DATA, data: res.listData! });
     dispatch({

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
 import { toast } from "sonner";
+// eslint-disable-next-line import/no-unresolved
+import { useCombinedStore } from "~/store/use-store/combine-store";
 
 type PropsAxiosType = {
   method: "get" | "post" | "put" | "delete";
@@ -29,7 +31,9 @@ const axiosFunc = async ({
     method,
     url,
     baseURL: baseUrl,
-    headers: headers || {},
+    headers: headers || {
+      Authorization: useCombinedStore.getState().token,
+    },
     cancelToken: source.token,
   };
 

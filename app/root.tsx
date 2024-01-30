@@ -9,7 +9,6 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { Toaster } from "./components/ui/sonner";
-import Providers from "./store/provider/provider";
 import styles from "./tailwind.css";
 
 export const links: LinksFunction = () => [
@@ -27,9 +26,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Providers>
+        {/* <Providers>
           <Outlet />
-        </Providers>
+        </Providers> */}
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

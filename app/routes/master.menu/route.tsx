@@ -5,17 +5,9 @@ import PageLayout from "~/components/template/base/page_layout";
 import MainTable from "~/components/template/table/main_table";
 import BreadCrumb from "~/components/ui/breadcrumb";
 import ModalComp from "~/components/ui/custom-modal";
-import {
-  BreadCrumbInterface,
-  MainTableColumnInterface,
-  StateMenuMaster,
-} from "~/interface";
 import { requireAuthCookie } from "~/lib/auth";
-import { MenuMasterActionGet } from "~/store/action/menu-master-action";
-import { ReducerMenuMaster } from "~/store/reducer/menu-master";
-import { useStore } from "~/store/use-store/use_store";
+import UseMasterMenu from "./function";
 import { BodyModalMenuCreate } from "./modal";
-import { useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -29,77 +21,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return userId;
 };
 
-const initState: StateMenuMaster = {
-  loading: true,
-  count: 0,
-  data: [],
-};
-
-export default function MasterRole() {
-  const userId = useLoaderData<typeof loader>();
-  const [globalState] = useStore();
-  const [state, dispatch] = React.useReducer(ReducerMenuMaster, initState);
-  const { loading, count, data } = state;
-  const { pageTable, rowPerPage } = globalState.tableReducer;
-  const [openModal, setOpenModal] = React.useState<boolean>(false);
-  const breadcrumb: BreadCrumbInterface[] = [
-    {
-      name_nav: "Menu Master",
-      link: "/master/menu",
-    },
-  ];
-
-  const tableColumn: MainTableColumnInterface[] = [
-    {
-      label: "Menu Name",
-      value: "menu_name",
-      align: "left",
-      visible: true,
-    },
-    {
-      label: "Title",
-      value: "title_menu",
-      align: "left",
-      visible: true,
-    },
-    {
-      label: "Path Url",
-      value: "path",
-      align: "left",
-      visible: true,
-    },
-    {
-      label: "Is Submenu",
-      value: "is_submenu",
-      align: "left",
-      visible: true,
-      type: "boolean",
-    },
-    {
-      label: "Parent Menu",
-      value: "parent_name",
-      align: "left",
-      visible: true,
-    },
-    {
-      label: "Date Created",
-      value: "created_at",
-      align: "left",
-      visible: true,
-      type: "datetime",
-    },
-    {
-      label: "Date Updated",
-      value: "updated_at",
-      align: "left",
-      visible: true,
-      type: "datetime",
-    },
-  ];
-
-  const getMenuData = React.useCallback(async () => {
-    await MenuMasterActionGet(dispatch, pageTable, rowPerPage, userId);
-  }, [pageTable, rowPerPage, userId]);
+export default function MasterMenu() {
+  const {
+    getMenuData,
+    pageTable,
+    rowPerPage,
+    breadcrumb,
+    tableColumn,
+    loading,
+    data,
+    count,
+    openModal,
+    setOpenModal,
+  } = UseMasterMenu();
 
   React.useEffect(() => {
     getMenuData();

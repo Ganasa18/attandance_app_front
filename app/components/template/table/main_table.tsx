@@ -3,16 +3,16 @@
 import { useSearchParams } from "@remix-run/react";
 import * as React from "react";
 import { Table, TableCaption } from "~/components/ui/table";
+import { MainTableProps } from "~/interface";
 import {
   actionCheckedAllTable,
   actionCheckedRowTable,
 } from "~/store/action/table-action";
-import { useStore } from "~/store/use-store/use_store";
+import { useCombinedStore } from "~/store/use-store/combine-store";
 import TableBodyCustom from "./table_body";
 import TableFooterCustom from "./table_footer";
 import TableHeadCustom from "./table_header";
 import CustomTableTools from "./table_tools";
-import { ActionPayloadTable, ActionTypes, MainTableProps } from "~/interface";
 const MainTable = (props: MainTableProps) => {
   const {
     titleTable,
@@ -33,22 +33,20 @@ const MainTable = (props: MainTableProps) => {
     hasTableFooter = true,
   }: MainTableProps = props;
   const hasEffectRun = React.useRef(false);
-  const [state, dispatch] = useStore();
-  const { selectedValue, rowPerPage, pageTable } = state.tableReducer;
-  type Dispatch = (action: ActionPayloadTable) => void;
-  const typeDispatch: Dispatch = dispatch;
+  const { selectedValue, rowPerPage, pageTable, setRowPerPage, setPageTable } =
+    useCombinedStore();
 
   const [searchParams] = useSearchParams();
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    actionCheckedAllTable(dispatch, event, data);
+    actionCheckedAllTable(event, data);
   };
 
   const handleClickSelected = (
     event: React.ChangeEvent<HTMLInputElement>,
     row: never
   ) => {
-    actionCheckedRowTable(dispatch, row, selectedValue);
+    actionCheckedRowTable(row, selectedValue);
   };
 
   const isSelected = (row: any) =>
@@ -59,21 +57,12 @@ const MainTable = (props: MainTableProps) => {
   const slicedData = data.slice(startIndex, endIndex);
 
   const handleChangePage = (event: any, newPage: any) => {
-    typeDispatch({
-      type: ActionTypes.SET_TABLE_PAGE,
-      action: newPage,
-    });
+    setPageTable(newPage);
   };
 
   const handleChangeRowsPerPage = (event: any) => {
-    typeDispatch({
-      type: ActionTypes.SET_TABLE_ROW_PER_PAGE,
-      action: parseInt(event),
-    });
-    typeDispatch({
-      type: ActionTypes.SET_TABLE_PAGE,
-      action: 1,
-    });
+    setRowPerPage(parseInt(event));
+    setPageTable(1);
   };
 
   React.useEffect(() => {
@@ -81,29 +70,17 @@ const MainTable = (props: MainTableProps) => {
       if (searchParams.size > 0) {
         const pageParams = searchParams.get("page");
         const perPageParams = searchParams.get("per_page");
-        typeDispatch({
-          type: ActionTypes.SET_TABLE_ROW_PER_PAGE,
-          action: parseInt(perPageParams!),
-        });
-        typeDispatch({
-          type: ActionTypes.SET_TABLE_PAGE,
-          action: parseInt(pageParams!),
-        });
-      } else {
-        typeDispatch({
-          type: ActionTypes.SET_TABLE_ROW_PER_PAGE,
-          action: 10,
-        });
 
-        typeDispatch({
-          type: ActionTypes.SET_TABLE_PAGE,
-          action: 1,
-        });
+        setRowPerPage(parseInt(perPageParams!));
+        setPageTable(parseInt(pageParams!));
+      } else {
+        setRowPerPage(10);
+        setPageTable(1);
       }
 
       hasEffectRun.current = true;
     }
-  }, [searchParams, typeDispatch]);
+  }, [searchParams, setPageTable, setRowPerPage]);
 
   return (
     <div className="shadow-sm mt-2 bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10 rounded-lg">

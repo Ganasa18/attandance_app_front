@@ -1,16 +1,12 @@
 /* eslint-disable import/no-unresolved */
 import { Link, useMatches } from "@remix-run/react";
 import { FaChevronDown } from "react-icons/fa6/index.js";
-import {
-  ActionPayloadGlobal,
-  ActionTypes,
-  TypeStoreStorage,
-} from "~/interface/interface_store";
-import { MenuItem } from "~/interface/menu_interface";
-import { useStore } from "~/store/use-store/use_store";
-import MainSidebar from "./sidebar";
-import { setLocalStorage, transformMenuStructure } from "~/lib/utils";
 import { useEffectOnce } from "~/hook/use_effect_once";
+import { TypeStoreStorage } from "~/interface/interface_store";
+import { MenuItem } from "~/interface/menu_interface";
+import { setLocalStorage, transformMenuStructure } from "~/lib/utils";
+import { useCombinedStore } from "~/store/use-store/combine-store";
+import MainSidebar from "./sidebar";
 
 const dummyMenu: MenuItem[] = [
   {
@@ -75,17 +71,10 @@ const LayoutSidebar = () => {
   const transformedMenu = transformMenuStructure(dummyMenu);
   const matches = useMatches();
   const pathname = matches[1].pathname;
-  const [state, dispatch] = useStore();
-  const { activeIndexNav } = state.globalReducer;
-
-  type Dispatch = (action: ActionPayloadGlobal) => void;
-  const typeDispatch: Dispatch = dispatch;
+  const { activeIndexNav, setActiveIndexNav } = useCombinedStore();
 
   const toggleSubMenu = (index: number) => {
-    typeDispatch({
-      type: ActionTypes.SET_NAV_INDEX,
-      action: index === activeIndexNav ? null : index,
-    });
+    setActiveIndexNav(index === activeIndexNav ? 0 : index);
   };
 
   const handleKeyDown = (index: number, event: React.KeyboardEvent) => {
